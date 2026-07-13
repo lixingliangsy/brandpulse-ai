@@ -1,0 +1,3 @@
+User-agent: *
+Allow: /
+Sitemap: https://brandpulse-ai.com/sitemap.xml
