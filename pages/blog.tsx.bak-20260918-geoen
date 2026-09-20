@@ -1,0 +1,195 @@
+import React from 'react'
+import Head from 'next/head'
+import { buildFaqJsonLd, buildHowToJsonLd } from '../lib/schema'
+import Layout from '../components/Layout'
+import { PRODUCT } from '../lib/product'
+import { geoPosts } from '../data/geoPosts'
+
+const GOOGLE = 'https://developers.google.com/search/docs'
+const OPENAI = 'https://openai.com/blog'
+
+const posts = [
+  {
+    slug: 'what-is-ai-search-visibility',
+    title: 'What is AI-search visibility (GEO)?',
+    type: 'Definitional · FAQPage',
+    query: 'what is ai search visibility geo',
+    body: 'AI-search visibility — sometimes called Generative Engine Optimization (GEO) — is how often and how favorably leading LLMs (ChatGPT, Perplexity, Claude) mention your brand when they answer queries in your space. As more buyers skip the blue links and ask an AI directly, "showing up in the answer" is becoming a distinct channel from classic Google ranking. BrandPulse tracks that channel the same way a rank tracker tracks SERPs.',
+    refs: [GOOGLE, OPENAI],
+  },
+  {
+    slug: 'track-brand-citations-llm',
+    title: 'How to track when LLMs cite your brand',
+    type: 'How-to · HowTo',
+    query: 'track brand citations chatgpt perplexity claude',
+    body: 'Pick the queries buyers actually ask, run them against ChatGPT, Perplexity, and Claude on a schedule, and record whether each engine named your brand, a competitor, or neither. Over time you get a citation rate per query and per engine — and you can see exactly where a competitor is being cited instead of you. BrandPulse automates the run + the competitor gap so you are not pasting prompts by hand.',
+    refs: [OPENAI, GOOGLE],
+  },
+  {
+    slug: 'geo-vs-seo',
+    title: 'How does GEO compare to SEO: what actually changes?',
+    type: 'Definitional + examples',
+    query: 'geo vs seo difference',
+    body: 'SEO optimizes for a ranked list of links; GEO optimizes for being the named source inside an AI answer. The inputs overlap (good content, authority, clear structure) but the measurement is different: instead of position #1–10, you care whether the model cited you at all. They are complementary — strong SEO usually helps GEO, but GEO needs its own tracking because LLM answers do not map 1:1 to search rankings.',
+    refs: [GOOGLE],
+  },
+  {
+    slug: 'competitor-citation-gap',
+    title: 'What is Finding your competitor citation gap?',
+    type: 'How-to · HowTo',
+    query: 'competitor brand citation gap llm',
+    body: 'A citation gap is a query where a competitor shows up in LLM answers and you do not. The fastest win is to find those gaps, then make sure your own pages clearly answer that query with citable sources. BrandPulse surfaces the gap per query and per engine so you can prioritize the pages most likely to flip a mention your way.',
+    refs: [GOOGLE, OPENAI],
+  },
+  {
+    slug: 'brandpulse-getting-started',
+    title: 'What is Getting started with BrandPulse?',
+    type: 'How-to · HowTo',
+    query: 'how to monitor brand in ai search',
+    body: 'Enter your brand and a few competitors, add the queries you care about, and BrandPulse runs them across the leading LLMs on a schedule. The free tier covers one brand on a weekly scan; Pro adds more brands, daily scans, and gap alerts. You do not need to wire up any API or proxy — it is no-code from the first scan.',
+    refs: [OPENAI],
+  },
+]
+
+const faqs = [
+  {
+    "question": "What is AI-search visibility (GEO)?",
+    "answer": "AI-search visibility (Generative Engine Optimization, or GEO) is how often and how favorably leading LLMs like ChatGPT, Perplexity, and Claude mention your brand when answering queries in your space. As buyers shift from Google's blue links to AI answers, being named in the answer is a distinct channel from classic search ranking."
+  },
+  {
+    "question": "Does BrandPulse guarantee my brand gets cited?",
+    "answer": "No. BrandPulse is a visibility tracker, not a guarantee. It shows you current citation rates and competitor gaps; it does not control what an LLM decides to cite. Improving citations still depends on your content, authority, and how clearly you answer each query."
+  },
+  {
+    "question": "How accurate are the citation counts?",
+    "answer": "Counts are sampled runs against each engine on a schedule, not a continuous exhaustive census. LLM answers also vary between runs and accounts. Treat the numbers as directional trends and gaps, not precise, audit-grade statistics."
+  },
+  {
+    "question": "How is this different from traditional rank tracking?",
+    "answer": "Rank trackers measure position in a search-results list. BrandPulse measures whether an LLM named your brand inside its answer. The two channels overlap but are not the same — LLM answers do not map 1:1 to SERP positions, so GEO needs its own measurement."
+  },
+  {
+    "question": "Can BrandPulse replace my SEO tool?",
+    "answer": "No. GEO and SEO are complementary. Strong SEO usually helps AI visibility, but BrandPulse only tracks the LLM-citation layer. Keep your existing SEO/analytics stack; BrandPulse adds the AI-answer visibility view on top."
+  },
+  {
+    "question": "Does using it change how LLMs see my brand?",
+    "answer": "No. It measures how often leading models mention your brand across the queries you track; it cannot influence model behaviour. The value is in showing you where to fix content, coverage, and sources so the picture improves on its own."
+  }
+] as { question: string; answer: string }[]
+
+const howToBlocks = [
+  {
+    "name": "How to track when LLMs cite your brand",
+    "steps": [
+      {
+        "name": "Overview",
+        "text": "Pick the queries buyers ask, run them against ChatGPT, Perplexity, and Claude on a schedule, and record whether each engine named your brand, a competitor, or neither. BrandPulse automates the run and the competitor gap."
+      }
+    ]
+  },
+  {
+    "name": "Finding your competitor citation gap",
+    "steps": [
+      {
+        "name": "Overview",
+        "text": "A citation gap is a query where a competitor shows up in LLM answers and you do not. BrandPulse surfaces the gap per query and engine so you can prioritize pages that are most likely to flip a mention your way."
+      }
+    ]
+  },
+  {
+    "name": "Getting started with BrandPulse",
+    "steps": [
+      {
+        "name": "Overview",
+        "text": "Enter your brand and competitors, add the queries you care about, and BrandPulse runs them across the leading LLMs on a schedule. Free tier covers one brand weekly; Pro adds daily scans and gap alerts. No API or proxy to wire up."
+      }
+    ]
+  }
+] as { name: string; steps: { name: string; text: string }[] }[]
+
+const NAME = PRODUCT.name
+
+export default function BlogPage() {
+  return (
+    <Layout>
+      <Head>
+        <link rel="canonical" href="https://brandpulse-ai.lxsaihub.com/blog" />
+
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(buildFaqJsonLd(faqs)) }}
+        />
+        {howToBlocks.map((block, i) => (
+          <script
+            key={`howto-${i}`}
+            type="application/ld+json"
+            dangerouslySetInnerHTML={{
+              __html: JSON.stringify(buildHowToJsonLd(block.name, block.steps)),
+            }}
+          />
+        ))}
+
+        <title>{`${PRODUCT.name} — Blog`}</title>
+        <meta name="description" content="Definitional and how-to posts on AI-search visibility (GEO), tracking brand citations across ChatGPT / Perplexity / Claude, and competitor citation gaps — the questions growth and marketing teams ask before they trust LLM answers." />
+              
+        <section className="mb-10">
+          <h2 className="text-xl font-bold text-slate-900">What does this product include at a glance?</h2>
+          <ul className="mt-3 space-y-2 text-sm text-slate-700 list-disc pl-5">
+            <li>Plain-language definition, FAQ, and references for answer engines</li>
+            <li>3 reviewable workflow steps (input → generate → review)</li>
+            <li>Decision-support output — you stay in the loop; no fabricated user counts</li>
+          </ul>
+        </section>
+
+          {posts.map((p, i) => (
+          <script
+            key={`article-${i}`}
+            type="application/ld+json"
+            dangerouslySetInnerHTML={{
+              __html: JSON.stringify({
+                '@context': 'https://schema.org',
+                '@type': 'Article',
+                headline: p.title,
+                description: p.body,
+                inLanguage: 'en',
+              }),
+            }}
+          />
+        ))}
+      </Head>
+      <div className="max-w-3xl">
+        <div className="text-xs font-bold tracking-widest uppercase text-indigo-600 mb-3">Blog · GEO</div>
+        <h1 className="text-4xl font-extrabold tracking-tight mb-4">AI-search visibility, explained</h1>
+        <p className="text-lg text-slate-600 mb-10">Own the definitional queries teams ask before they trust what an LLM says about their brand.</p>
+
+        <div className="space-y-8">
+          {posts.map((p) => (
+            <article key={p.slug} className="border-b border-slate-200 pb-8">
+              <div className="text-xs font-semibold text-indigo-600 mb-1">{p.type}</div>
+              <h2 className="text-2xl font-bold mb-2 text-slate-900">{p.title}</h2>
+              <p className="text-sm text-slate-600 mb-2"><span className="font-semibold">Target query:</span> {p.query}</p>
+              <p className="text-slate-700 leading-relaxed">{p.body}</p>
+              <p className="text-xs text-slate-400 mt-3">refs: {p.refs.join(' · ')}</p>
+            </article>
+          ))}
+        </div>
+
+        <h2 className="text-2xl font-bold mt-14 mb-2 text-slate-900">Which GEO deep-dives should you read first?</h2>
+        <p className="text-sm text-slate-500 mb-6">Long-form, cited explainers. Each carries a decision-support disclaimer on methodology limits.</p>
+        <div className="space-y-5">
+          {geoPosts.map((p) => (
+            <div key={p.slug} className="border-b border-slate-200 pb-5">
+              <h3 className="text-xl font-semibold">
+                <a href={`/blog/${p.slug}`} className="text-indigo-700 hover:underline">{p.title}</a>
+              </h3>
+              <p className="text-sm text-slate-600 mt-1">{p.description}</p>
+            </div>
+          ))}
+        </div>
+
+        <p className="text-xs text-slate-400 mt-8">Publish + syndicate per gtm-launch (IH + GEO indexes). Each post carries authoritative refs.</p>
+      </div>
+    </Layout>
+  )
+}
